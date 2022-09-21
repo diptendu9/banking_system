@@ -1,12 +1,16 @@
+import email
 from django.db import models
 from Customer.models import *
 from django.conf import settings
 import random
-from bankproject.settings import AUTH_USER_MODEL 
+from django.contrib.auth.models import User
+# from bankproject.settings import AUTH_USER_MODEL 
 # Create your models here.
 
 class Accholder(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    email=models.EmailField(unique=True)
     account_number = models.IntegerField(default=random.randint(00000000,999999999),unique=True)
     atypes = (
         ('S', 'Savings'),
@@ -18,4 +22,4 @@ class Accholder(models.Model):
     aadhaar = models.IntegerField(null=True)
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.username
