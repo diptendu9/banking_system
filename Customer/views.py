@@ -3,9 +3,7 @@ from rest_framework.views import APIView
 from .models import *
 from .forms import UserForm
 from rest_framework import generics
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.response import Response
-from django.http import HttpResponse
+
 from django.contrib.auth import authenticate , login 
 from django.shortcuts import redirect,render
 # from django.views.generic import TemplateView
@@ -21,7 +19,7 @@ from django.contrib.auth.forms import UserCreationForm
 class SignupView(CreateView):
     form_class= UserCreationForm
     template_name='signup.html'
-    success_url= 'login'
+    success_url='/login/'
 
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
