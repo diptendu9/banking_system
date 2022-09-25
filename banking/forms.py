@@ -1,6 +1,7 @@
 
+from pyexpat import model
 from django import forms
-from banking.models import Accholder
+from banking.models import Accholder, Transactions
 
 
 """
@@ -15,7 +16,7 @@ class CreateAccountForm(forms.ModelForm):
         # fields = '__all__'
 
         widgets={
-       
+    
             'name':forms.TextInput(attrs={'class':'form-control','placeholder':"Name"}),
             'email':forms.TextInput(attrs={'class':'form-control','placeholder':"Email"}),
             'acc_type':forms.Select(attrs={'class':'form-control','placeholder':"Account_Type"}),
@@ -23,6 +24,25 @@ class CreateAccountForm(forms.ModelForm):
             'aadhaar':forms.TextInput(attrs={'class':'form-control','placeholder':"Aaadhaar"}),
         }
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
+
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transactions
+        fields= ['t_type','amount']
+
+        widgets={
+                't_type': forms.Select(attrs={'class':'form-control','placeholder':"Transaction Type"}),
+                'amount':forms.TextInput(attrs={'class':'form-control','placeholder':"Amount"})
+            }
+
+class TransferForm(forms.ModelForm):
+    class Meta:
+        model = Transactions
+        fields= ['reciver','amount']
+
+        widgets={
+                'reciver': forms.TextInput(attrs={'class':'form-control','placeholder':"Reciver"}),
+                'amount':forms.TextInput(attrs={'class':'form-control','placeholder':"Amount"})
+            }

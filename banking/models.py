@@ -14,8 +14,8 @@ class Accholder(models.Model):
     )
     acc_type = models.CharField(max_length=1, choices=atypes)
     balance = models.PositiveIntegerField(default=0)
-    pan= models.CharField(max_length=100)
-    aadhaar = models.IntegerField(null=True)
+    pan= models.CharField(max_length=100, unique=True)
+    aadhaar = models.IntegerField(null=True, unique=True)
     date = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
@@ -28,7 +28,12 @@ class Accholder(models.Model):
     
 class Transactions(models.Model):
     user = models.ForeignKey(Accholder,related_name = "sender",on_delete=models.CASCADE)
-    reciver = models.ForeignKey(Accholder,related_name = "receiver",on_delete=models.CASCADE)
+    reciver = models.ForeignKey(Accholder,related_name = "receiver",on_delete=models.CASCADE, null=True)
+    ttype=(
+        ('Deposited', 'Deposit'),
+        ('Withdrawn', 'Withdraw')
+    )
+    t_type = models.CharField(max_length=9, choices=ttype, null=True)
     amount = models.FloatField()
     transfer_date= models.DateTimeField(auto_now=True)
     transact_date= models.DateTimeField(auto_now=True) 

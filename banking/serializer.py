@@ -10,13 +10,30 @@ class BankingSerializer(serializers.ModelSerializer):
    
    class Meta:
       model = Accholder
-      fields = ['user','name','email','acc_type','pan', 'aadhaar']
+      fields = '__all__'
+      
       # def create(self, validated_data):
       #    return Accholder.objects.create(**validated_data)
+      def create(self, validate_data):
+         user= validate_data.pop('user')
+         acc = Accholder.objects.create(user=user, **validate_data)
+         return acc
+
+      def save(self, **kwargs):
+         return super().save(**kwargs)
+
 
 
 class TranasctionSerializer(serializers.ModelSerializer):
 
    class Meta:
       model = Transactions
-      fields = ['user', 'reciver', 'amount', 'transfer_date', 'transact_date']
+      fields = ['user',' t_type', 'amount']
+
+
+
+class TransferSerializer(serializers.ModelSerializer):
+
+   class Meta:
+      model = Transactions
+      fields = ['user','reciver', 'amount']

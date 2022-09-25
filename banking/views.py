@@ -1,14 +1,16 @@
-from rest_framework import generics
-from banking.models import Accholder
-from banking.serializer import BankingSerializer
+import email
+from rest_framework import generics, status
+from banking.models import Accholder, Transactions
+from banking.serializer import BankingSerializer, TranasctionSerializer, TransferSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.shortcuts import redirect,render, get_object_or_404
-from .forms import CreateAccountForm
+from .forms import CreateAccountForm, TransactionForm, TransferForm
 from django.contrib.auth.models import User
-
+from django.http import HttpResponse
+from django.db.models import F
 
 # Create your views here.
 
@@ -25,6 +27,8 @@ class CreateAccount(generics.CreateAPIView):
     template_name = 'accn.html'
     queryset = Accholder.objects.all()
 
+    
+
     # print("hwehkqedjkqsjaxjksa")
     def get(self, request):
         # profile = get_object_or_404(Accholder)
@@ -34,15 +38,16 @@ class CreateAccount(generics.CreateAPIView):
         return Response({'serializer': serializer,'form':form})
 
     def post(self, request):
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         form = CreateAccountForm(request.POST)
-        print(form.is_valid())
-        serializer = BankingSerializer()
-        print(request.POST)
+        serializer = BankingSerializer(data = request.data)
         
+        form_dict = form.data.dict()
+    
+        form_dict['user']= request.user
+        form = CreateAccountForm(form_dict)
         if form.is_valid():
             form.save()
-           
             return redirect('home')
         return Response({'serializer': serializer,'form':form})
     # def post(self,request,pk):
@@ -78,6 +83,77 @@ def GetUserBalance(request):
     # return Response(content)
 
 class TransactionAPIview(generics.CreateAPIView):
-    renderer_classes =TemplateHTMLRenderer
-    serializer_class= BankingSerializer
+    # import ipdb; ipdb.set_trace()
+    renderer_classes =[TemplateHTMLRenderer]
+    permission_classes = [IsAuthenticated]
+    serializer_class= TranasctionSerializer
     template_name='index.html'
+    # queryset = Transactions.objects.all()
+
+
+
+    def get(self,request):
+        seralizer = TranasctionSerializer()
+        form = TransactionForm
+        return Response({'seializer': seralizer, 'form': form})
+
+    def post(self, request):
+        account = get_object_or_404(Accholder,user=request.user)
+        
+        serializer = TranasctionSerializer()
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction_type = serializer.validated_data.get('transaction_type')
+            amount = serializer.validated_data.get('amount')
+            if(transaction_type == 'Withdraw') :
+                if(amount>account.deposit) :
+                    return HttpResponse("Balance is low")
+                else:
+                    account.deposit=account.deposit-amount
+                    account.save()
+            elif(transaction_type == 'Deposit') :
+                account.deposit=account.deposit+amount
+                print(account.deposit)
+                account.save()
+            form.save()
+            return redirect('home')
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class TransferAPIView(generics.CreateAPIView) :
+    renderer_classes = [TemplateHTMLRenderer]
+    permission_classes = [IsAuthenticated]
+
+    template_name = "transfer.html"
+    serializer_class = TransferSerializer
+
+    def get(self, request) :
+        serializer = TransferSerializer()
+        form = TransferForm
+        return Response({'serializer' : serializer,'form' : form})
+
+    def post(self,request,*args,**kwargs):
+        serializer = TransferSerializer(data=request.data)
+        if serializer.is_valid() :
+            amount =serializer.validated_data.get('amount')
+            to_account = serializer.validated_data.get('reciver')
+            sender = get_object_or_404(Accholder,user=request.user)
+        if sender.balance > amount:
+            # debit the sender account
+                sender.balance -= amount
+                sender.save()
+            #credit the receiver account
+                receiver = Accholder.objects.get(account_number=to_account)
+                receiver.balance += amount
+                receiver.save()
+                serializer.save()
+        else :
+            return HttpResponse("Balance is low")
+        return HttpResponse("Done")
+
+
+
+
+
+
+    
