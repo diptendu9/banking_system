@@ -88,6 +88,8 @@ class TransactionAPIview(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class= TranasctionSerializer
     template_name='index.html'
+    queryset = Transactions.objects.all()
+
     # queryset = Transactions.objects.all()
 
 
@@ -99,21 +101,20 @@ class TransactionAPIview(generics.CreateAPIView):
 
     def post(self, request):
         account = get_object_or_404(Accholder,user=request.user)
-        
         serializer = TranasctionSerializer()
         form = TransactionForm(request.POST)
         if form.is_valid():
-            transaction_type = serializer.validated_data.get('transaction_type')
+            t_type = serializer.validated_data.get('t_type')
             amount = serializer.validated_data.get('amount')
-            if(transaction_type == 'Withdraw') :
-                if(amount>account.deposit) :
+            if(t_type == 'Withdraw') :
+                if(amount>account.balance) :
                     return HttpResponse("Balance is low")
                 else:
-                    account.deposit=account.deposit-amount
+                    account.balance=account.balance-amount
                     account.save()
-            elif(transaction_type == 'Deposit') :
-                account.deposit=account.deposit+amount
-                print(account.deposit)
+            elif(t_type == 'Deposit') :
+                account.balance=account.balance+amount
+                print(account.balance)
                 account.save()
             form.save()
             return redirect('home')

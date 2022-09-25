@@ -28,13 +28,15 @@ class Accholder(models.Model):
     
 class Transactions(models.Model):
     user = models.ForeignKey(Accholder,related_name = "sender",on_delete=models.CASCADE)
-    reciver = models.ForeignKey(Accholder,related_name = "receiver",on_delete=models.CASCADE, null=True)
     ttype=(
         ('Deposited', 'Deposit'),
         ('Withdrawn', 'Withdraw')
     )
     t_type = models.CharField(max_length=9, choices=ttype, null=True)
     amount = models.FloatField()
-    transfer_date= models.DateTimeField(auto_now=True)
     transact_date= models.DateTimeField(auto_now=True) 
 
+class Transfers(models.Model):
+    reciver = models.ForeignKey(Accholder,related_name = "receiver",on_delete=models.CASCADE)
+    amount = models.FloatField()
+    transfer_date= models.DateTimeField(auto_now=True)

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from banking.views import AccUpdate, CreateAccount, GetUserBalance, TransactionAPIview, TransferAPIView, ViewAccount
+from banking.views import AccUpdate, CreateAccount, GetUserBalance, TransactionAPIview, ViewAccount, TransferAPIView
 
 urlpatterns = [
     path('create/',CreateAccount.as_view(),name = "create"),

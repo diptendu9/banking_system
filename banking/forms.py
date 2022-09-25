@@ -1,7 +1,7 @@
 
 from pyexpat import model
 from django import forms
-from banking.models import Accholder, Transactions
+from banking.models import Accholder, Transactions, Transfers
 
 
 """
@@ -39,7 +39,7 @@ class TransactionForm(forms.ModelForm):
 
 class TransferForm(forms.ModelForm):
     class Meta:
-        model = Transactions
+        model = Transfers
         fields= ['reciver','amount']
 
         widgets={
