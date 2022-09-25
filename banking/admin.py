@@ -4,3 +4,4 @@ from . import models
 
 admin.site.register(models.Accholder)
 admin.site.register(models.Transactions)
+admin.site.register(models.Transfers)

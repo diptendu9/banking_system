@@ -1,11 +1,15 @@
+from http.client import HTTPResponse
+from urllib import request, response
 from django.shortcuts import render
 from rest_framework.views import APIView
+
+from banking.models import Accholder
 from .models import *
 from .forms import UserForm
 from rest_framework import generics
 
 from django.contrib.auth import authenticate , login 
-from django.shortcuts import redirect,render
+from django.shortcuts import redirect,render, get_object_or_404
 # from django.views.generic import TemplateView
 # from .serializer import CustomerSerializer
 from django.views.generic  import TemplateView
@@ -37,6 +41,10 @@ class LogoutInterfaceView(LogoutView):
 
 class HomeView(TemplateView):
     template_name = 'welcome.html'
+    
+    
+    
+
 
 # class CreateCustomUser(generics.CreateAPIView):
     

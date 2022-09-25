@@ -1,6 +1,6 @@
 import email
 from rest_framework import generics, status
-from banking.models import Accholder, Transactions
+from banking.models import Accholder, Transactions, Transfers
 from banking.serializer import BankingSerializer, TranasctionSerializer, TransferSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -92,65 +92,116 @@ class TransactionAPIview(generics.CreateAPIView):
 
     # queryset = Transactions.objects.all()
 
-
-
     def get(self,request):
         seralizer = TranasctionSerializer()
-        form = TransactionForm
-        return Response({'seializer': seralizer, 'form': form})
+        account = get_object_or_404(Accholder,user=request.user)
+        form = TransactionForm()
+        return Response({'seializer': seralizer, 'form': form, "account" : account})
 
     def post(self, request):
         account = get_object_or_404(Accholder,user=request.user)
-        serializer = TranasctionSerializer()
+        print(account.name)
+        serializer = TranasctionSerializer(data=request.data)
         form = TransactionForm(request.POST)
+        form_dict = form.data.dict()
+        form = TransactionForm(form_dict)
+        print(form.data)
+        print(form.is_valid())
         if form.is_valid():
-            t_type = serializer.validated_data.get('t_type')
-            amount = serializer.validated_data.get('amount')
-            if(t_type == 'Withdraw') :
+            print(account.balance)
+            trans_type = form.cleaned_data['t_type']
+            amount = form.cleaned_data['amount']
+            print(trans_type)
+
+            if(trans_type == 'Withdrawn') :
+                
                 if(amount>account.balance) :
                     return HttpResponse("Balance is low")
                 else:
                     account.balance=account.balance-amount
                     account.save()
-            elif(t_type == 'Deposit') :
+            elif(trans_type == 'Deposited') :
                 account.balance=account.balance+amount
-                print(account.balance)
                 account.save()
+            form.instance.user= account
             form.save()
             return redirect('home')
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({'serializer': serializer,'form':form})
 
 
 class TransferAPIView(generics.CreateAPIView) :
     renderer_classes = [TemplateHTMLRenderer]
     permission_classes = [IsAuthenticated]
-
     template_name = "transfer.html"
     serializer_class = TransferSerializer
+    queryset = Transfers.objects.all()
 
     def get(self, request) :
         serializer = TransferSerializer()
-        form = TransferForm
-        return Response({'serializer' : serializer,'form' : form})
+        form = TransferForm()
+        account = get_object_or_404(Accholder,user=request.user)
+        return Response({'seializer': serializer, 'form': form, "account" : account})
 
-    def post(self,request,*args,**kwargs):
+    # def post(self, request):
+    #     account = get_object_or_404(Accholder,user=request.user)
+    #     print(account.name)
+    #     serializer = TransferSerializer(data=request.data)
+    #     form = TransferForm(request.POST)
+    #     form_dict = form.data.dict()
+    #     form = TransferForm(form_dict)
+    #     print(form.data)
+    #     print(form.is_valid())
+    #     if form.is_valid():
+    #         print(account.balance)
+    #         trans_type = form.cleaned_data['t_type']
+    #         amount = form.cleaned_data['amount']
+    #         print(trans_type)
+
+    #         if(trans_type == 'Withdrawn') :
+                
+    #             if(amount>account.balance) :
+    #                 return HttpResponse("Balance is low")
+    #             else:
+    #                 account.balance=account.balance-amount
+    #                 account.save()
+    #         elif(trans_type == 'Deposited') :
+    #             account.balance=account.balance+amount
+    #             account.save()
+    #         form.instance.user= account
+    #         form.save()
+    #         return redirect('home')
+    #     return Response({'serializer': serializer,'form':form})
+
+    def post(self,request):
+        # import ipdb; ipdb.set_trace()
+
         serializer = TransferSerializer(data=request.data)
-        if serializer.is_valid() :
-            amount =serializer.validated_data.get('amount')
-            to_account = serializer.validated_data.get('reciver')
-            sender = get_object_or_404(Accholder,user=request.user)
-        if sender.balance > amount:
-            # debit the sender account
-                sender.balance -= amount
-                sender.save()
-            #credit the receiver account
-                receiver = Accholder.objects.get(account_number=to_account)
-                receiver.balance += amount
-                receiver.save()
-                serializer.save()
-        else :
-            return HttpResponse("Balance is low")
-        return HttpResponse("Done")
+        account = get_object_or_404(Accholder,user=request.user)
+        print(account.name)
+        
+        form = TransferForm(request.POST)
+        print(form.data)
+        form_dict = form.data.dict()
+        form = TransferForm(form_dict)
+        print(form.data)
+        print(form.is_valid())
+        if form.is_valid():
+            amount =form.cleaned_data['amount']
+            reciver = form.cleaned_data['reciver']
+            if account.balance > amount:
+                    account.balance -= amount
+                    account.save()
+                    receiver = Accholder.objects.get(account_number=reciver)
+                    print(reciver)
+                    receiver.balance += amount
+                    receiver.save()
+                    form.instance.user= account
+                    form.save()
+            else :
+                return HttpResponse("Balance is low")
+
+            return redirect('home')
+        return Response({'serializer': serializer,'form':form, "account" : account})
 
 
 

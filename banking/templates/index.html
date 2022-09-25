@@ -2,7 +2,15 @@
 
 {% block content %}
     <div class="container">
-        <form action="{% url 'transact' %}" method="POST">
+        <form action="{% url 'transact' %}" method="post">
+          {% csrf_token %}
+
+          Account Balance : {{account.balance}}
+            <div class="form-group">
+              <label >user:</label>
+              <input type="text" value={{user.get_username}} readonly>
+            </div>
+
             <div class="form-group">
                 <label>Transcation Type:</label>
                 {{form.t_type}}
@@ -11,7 +19,7 @@
                 <label>Amount:</label>
                 {{form.amount}}
               </div>
-              <button type="submit" class="btn btn-primary" value="trans">Do</button>
+              <button type="submit" class="btn btn-primary" value="save">Do</button>
         </form>
     </div>
 {% endblock %}
