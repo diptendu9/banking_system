@@ -44,3 +44,8 @@ class Transfers(models.Model):
     reciver = models.CharField(max_length=50)
     amount = models.FloatField()
     transfer_date= models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.reciver
+
+

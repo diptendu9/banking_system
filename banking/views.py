@@ -1,4 +1,5 @@
 import email
+from urllib import response
 from rest_framework import generics, status
 from banking.models import Accholder, Transactions, Transfers
 from banking.serializer import BankingSerializer, TranasctionSerializer, TransferSerializer
@@ -11,6 +12,7 @@ from .forms import CreateAccountForm, TransactionForm, TransferForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.db.models import F
+import csv
 
 # Create your views here.
 
@@ -142,36 +144,6 @@ class TransferAPIView(generics.CreateAPIView) :
         account = get_object_or_404(Accholder,user=request.user)
         return Response({'seializer': serializer, 'form': form, "account" : account})
 
-    # def post(self, request):
-    #     account = get_object_or_404(Accholder,user=request.user)
-    #     print(account.name)
-    #     serializer = TransferSerializer(data=request.data)
-    #     form = TransferForm(request.POST)
-    #     form_dict = form.data.dict()
-    #     form = TransferForm(form_dict)
-    #     print(form.data)
-    #     print(form.is_valid())
-    #     if form.is_valid():
-    #         print(account.balance)
-    #         trans_type = form.cleaned_data['t_type']
-    #         amount = form.cleaned_data['amount']
-    #         print(trans_type)
-
-    #         if(trans_type == 'Withdrawn') :
-                
-    #             if(amount>account.balance) :
-    #                 return HttpResponse("Balance is low")
-    #             else:
-    #                 account.balance=account.balance-amount
-    #                 account.save()
-    #         elif(trans_type == 'Deposited') :
-    #             account.balance=account.balance+amount
-    #             account.save()
-    #         form.instance.user= account
-    #         form.save()
-    #         return redirect('home')
-    #     return Response({'serializer': serializer,'form':form})
-
     def post(self,request):
         # import ipdb; ipdb.set_trace()
 
@@ -207,5 +179,19 @@ class TransferAPIView(generics.CreateAPIView) :
 
 
 
+def statement(request):
+    response = HttpResponse(content_type='text/plain')
+    response['content-Disposition']='attachment; filename=state.txt'
+    tran = Transactions.objects.all()
+    lines=[]
+    for t in tran:
+        lines.append(f'\n\n{t.t_type}\n {t.amount}\n {t.transact_date}\n')
 
+    send = Transfers.objects.all()
+
+    for s in send:
+        lines.append(f'\n\n{s.reciver}\n {s.amount}\n  {s.transfer_date}\n\n')
     
+    
+    response.writelines(lines)
+    return response
