@@ -4,6 +4,9 @@ import random
 from django.contrib.auth.models import User
 
 class Accholder(models.Model):
+    '''
+    Bank Account Holder model
+    '''
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     email=models.EmailField(unique=True)
@@ -27,6 +30,10 @@ class Accholder(models.Model):
 
     
 class Transactions(models.Model):
+    '''
+    Model for Create Transactions
+    '''
+
     user = models.ForeignKey(Accholder,on_delete=models.CASCADE)
     ttype=(
         ('Deposited', 'Deposit'),
@@ -40,6 +47,10 @@ class Transactions(models.Model):
         return self.t_type
 
 class Transfers(models.Model):
+    '''
+    Model for making transfers
+    '''
+
     user = models.ForeignKey(Accholder,on_delete=models.CASCADE)
     reciver = models.CharField(max_length=50)
     amount = models.FloatField()

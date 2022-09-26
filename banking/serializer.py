@@ -7,7 +7,9 @@ from banking.models import Accholder, Transactions, Transfers
 
 
 class BankingSerializer(serializers.ModelSerializer):
-   
+   '''
+   Serializer to Create Bank Account
+   '''
    class Meta:
       model = Accholder
       fields = '__all__'
@@ -25,7 +27,9 @@ class BankingSerializer(serializers.ModelSerializer):
 
 
 class TranasctionSerializer(serializers.ModelSerializer):
-
+   '''
+   Serializer to make Deposit and Withdraw
+   '''
    class Meta:
       model = Transactions
       fields = '__all__'
@@ -33,6 +37,10 @@ class TranasctionSerializer(serializers.ModelSerializer):
 
 
 class TransferSerializer(serializers.ModelSerializer):
+
+   '''
+   Serializer to Make Transfer
+   '''
    # user =  serializers.CharField(source='request.user') 
    class Meta:
       model = Transfers

@@ -37,13 +37,22 @@ class SignupView(CreateView):
     
 
 class LoginInterfaceView(LoginView):
+    '''
+    View for Login
+    '''
     template_name = 'login.html'
 
 
 class LogoutInterfaceView(LogoutView):
+    '''
+    View for Logout
+    '''
     template_name= 'logout.html'
 
 class HomeView(TemplateView):
+    '''
+    Default Home option
+    '''
     template_name = 'welcome.html'
     
     

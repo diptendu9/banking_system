@@ -4,11 +4,10 @@ from django import forms
 from banking.models import Accholder, Transactions, Transfers
 
 
-"""
-This class is used to create a form for the Transactions model.
-this contians the fields that are required for the Transactions model like the account_number and the amount
-"""
 class CreateAccountForm(forms.ModelForm):
+    '''
+    For creating Bank Account
+    '''
 
     class Meta:
         model = Accholder
@@ -28,6 +27,9 @@ class CreateAccountForm(forms.ModelForm):
 
 
 class TransactionForm(forms.ModelForm):
+    '''
+    For making deposit or withdraw
+    '''
     class Meta:
         model = Transactions
         fields= ['t_type','amount']
@@ -38,6 +40,9 @@ class TransactionForm(forms.ModelForm):
             }
 
 class TransferForm(forms.ModelForm):
+    '''
+    For transfering Money
+    '''
     class Meta:
         model = Transfers
         fields= ['reciver','amount']
