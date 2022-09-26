@@ -18,10 +18,18 @@ import csv
 
 
 class AccUpdate(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    Update user account
+    '''
+
     queryset= Accholder.objects.all()
     serializer_class= BankingSerializer
 
 class CreateAccount(generics.CreateAPIView):
+
+    '''
+    Create a Bank account for logged in user
+    '''
     
     serializer_class = BankingSerializer
     permission_classes = [IsAuthenticated]
@@ -52,17 +60,11 @@ class CreateAccount(generics.CreateAPIView):
             form.save()
             return redirect('home')
         return Response({'serializer': serializer,'form':form})
-    # def post(self,request,pk):
-    #     profile = get_object_or_404(Accholder, pk=pk)
-    #     serial = BankingSerializer(data = request.data, many=True)
-    #     print(serial)
-        
-    #     if serial.is_valid():
-    #         serial.save()
-    #     return HTTPResponse('banking')
-
 
 class ViewAccount(generics.ListAPIView):
+    '''
+    view account details
+    '''
     serializer_class = BankingSerializer
 
     def get_queryset(self):
@@ -75,9 +77,11 @@ class ViewAccount(generics.ListAPIView):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated, ))
 def GetUserBalance(request):
-    # def get_queryset(self):
-        user_id= request.user.id
-        return Response(Accholder.objects.filter(user__id=user_id).first().balance)
+    '''
+    Get the balance
+    '''
+    user_id= request.user.id
+    return Response(Accholder.objects.filter(user__id=user_id).first().balance)
 
     # content = {
     #     'balance': str(Accholder.balance)
@@ -85,6 +89,10 @@ def GetUserBalance(request):
     # return Response(content)
 
 class TransactionAPIview(generics.CreateAPIView):
+    '''
+    API to create Deposit and Withdraw
+    '''
+
     # import ipdb; ipdb.set_trace()
     renderer_classes =[TemplateHTMLRenderer]
     permission_classes = [IsAuthenticated]
@@ -131,7 +139,11 @@ class TransactionAPIview(generics.CreateAPIView):
         return Response({'serializer': serializer,'form':form})
 
 
-class TransferAPIView(generics.CreateAPIView) :
+class TransferAPIView(generics.CreateAPIView):
+
+    '''
+    API to transfer money from one account to another account
+    '''
     renderer_classes = [TemplateHTMLRenderer]
     permission_classes = [IsAuthenticated]
     template_name = "transfer.html"
@@ -180,8 +192,12 @@ class TransferAPIView(generics.CreateAPIView) :
 
 
 def statement(request):
+    '''
+    To download the statements
+    '''
+
     response = HttpResponse(content_type='text/plain')
-    response['content-Disposition']='attachment; filename=state.txt'
+    response['content-Disposition']='attachment; filename=statement.csv'
     tran = Transactions.objects.all()
     lines=[]
     for t in tran:

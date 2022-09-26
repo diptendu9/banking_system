@@ -21,6 +21,10 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 class SignupView(CreateView):
+    """
+    Signup view for user
+    """
+
     form_class= UserCreationForm
     template_name='signup.html'
     success_url='/login/'
@@ -46,49 +50,4 @@ class HomeView(TemplateView):
     
 
 
-# class CreateCustomUser(generics.CreateAPIView):
-    
-#     renderer_classes = [TemplateHTMLRenderer]
-#     template_name = 'register.html'
-#     queryset = CustomUser.objects.all()
-
-#     def post(self, request):
-#         serializer = CustomerSerializer()
-#         form = UserForm(request.POST or None)
-#         # print(form)
-#         if form.is_valid():
-#             form.save()
-#             user = CustomUser.objects.filter(email=form.changed_data['email'])
-
-#             # if user.exists():
-                
-#             return redirect('login')
-            
-        
-#         return Response({'serializer': serializer,'form':form})
-
-
-# def login_view(request):
-#     if not request.user.is_authenticated:
-#         if request.method == "POST":
-#             forms = Auth_from(request.POST)
-#             if forms.is_valid():
-#                 user_model = authenticate(email=forms.cleaned_data['email'],password=forms.cleaned_data['password'])
-#                 if user_model:
-#                     print(user_model)
-#                     login(request,user_model)
-                    
-#                     return redirect('home')
-            
-#         return render(request,"login.html")
-    
-#     else:
-#         return redirect('login')
-
-
-
-
-
-# class DashboardView(TemplateView):
-#     template_name = "index.html"
 
