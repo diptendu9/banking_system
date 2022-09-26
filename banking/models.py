@@ -35,28 +35,29 @@ class Transactions(models.Model):
     '''
 
     user = models.ForeignKey(Accholder,on_delete=models.CASCADE)
+    reciver = models.CharField(max_length=50, null=True)
     ttype=(
         ('Deposited', 'Deposit'),
         ('Withdrawn', 'Withdraw')
     )
-    t_type = models.CharField(max_length=9, choices=ttype)
+    t_type = models.CharField(max_length=9, choices=ttype, null=True)
     amount = models.FloatField()
     transact_date= models.DateTimeField(auto_now=True) 
 
     def __str__(self):
-        return self.t_type
+        return self.transact_date
 
-class Transfers(models.Model):
-    '''
-    Model for making transfers
-    '''
+# class Transfers(models.Model):
+#     '''
+#     Model for making transfers
+#     '''
 
-    user = models.ForeignKey(Accholder,on_delete=models.CASCADE)
-    reciver = models.CharField(max_length=50)
-    amount = models.FloatField()
-    transfer_date= models.DateTimeField(auto_now=True)
+#     user = models.ForeignKey(Accholder,on_delete=models.CASCADE)
+#     reciver = models.CharField(max_length=50)
+#     amount = models.FloatField()
+#     transfer_date= models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.reciver
+#     def __str__(self):
+#         return self.reciver
 
 

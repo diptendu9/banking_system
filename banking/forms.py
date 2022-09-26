@@ -1,7 +1,7 @@
 
 from pyexpat import model
 from django import forms
-from banking.models import Accholder, Transactions, Transfers
+from banking.models import Accholder, Transactions
 
 
 class CreateAccountForm(forms.ModelForm):
@@ -44,7 +44,7 @@ class TransferForm(forms.ModelForm):
     For transfering Money
     '''
     class Meta:
-        model = Transfers
+        model = Transactions
         fields= ['reciver','amount']
 
         widgets={

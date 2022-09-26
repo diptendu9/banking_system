@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 
 from banking.models import Accholder
 from .models import *
-from .forms import UserForm
 from rest_framework import generics
 
 from django.contrib.auth import authenticate , login 

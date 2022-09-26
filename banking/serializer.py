@@ -3,7 +3,7 @@ from email.policy import default
 from telnetlib import AUTHENTICATION
 from urllib import request
 from rest_framework import serializers
-from banking.models import Accholder, Transactions, Transfers
+from banking.models import Accholder, Transactions
 
 
 class BankingSerializer(serializers.ModelSerializer):
@@ -32,7 +32,7 @@ class TranasctionSerializer(serializers.ModelSerializer):
    '''
    class Meta:
       model = Transactions
-      fields = '__all__'
+      fields = ['user', 't_type', 'amount']
 
 
 
@@ -43,5 +43,5 @@ class TransferSerializer(serializers.ModelSerializer):
    '''
    # user =  serializers.CharField(source='request.user') 
    class Meta:
-      model = Transfers
-      fields = '__all__'
+      model = Transactions
+      fields = ['user','t_type', 'reciver', 'amount']

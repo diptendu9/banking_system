@@ -1,7 +1,7 @@
 import email
 from urllib import response
 from rest_framework import generics, status
-from banking.models import Accholder, Transactions, Transfers
+from banking.models import Accholder, Transactions
 from banking.serializer import BankingSerializer, TranasctionSerializer, TransferSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -148,7 +148,7 @@ class TransferAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     template_name = "transfer.html"
     serializer_class = TransferSerializer
-    queryset = Transfers.objects.all()
+    queryset = Transactions.objects.all()
 
     def get(self, request) :
         serializer = TransferSerializer()
@@ -180,6 +180,7 @@ class TransferAPIView(generics.CreateAPIView):
                     receiver.balance += amount
                     receiver.save()
                     form.instance.user= account
+                    form.instance.t_type= "Transfer"   
                     form.save()
             else :
                 return HttpResponse("Balance is low")
@@ -201,12 +202,12 @@ def statement(request):
     tran = Transactions.objects.all()
     lines=[]
     for t in tran:
-        lines.append(f'\n\n{t.t_type}\n {t.amount}\n {t.transact_date}\n')
+        lines.append(f'\n\n{t.t_type}\n {t.reciver}\n {t.amount}\n {t.transact_date}\n')
 
-    send = Transfers.objects.all()
+    # send = Transfers.objects.all()
 
-    for s in send:
-        lines.append(f'\n\n{s.reciver}\n {s.amount}\n  {s.transfer_date}\n\n')
+    # for s in send:
+    #     lines.append(f'\n\n{s.reciver}\n {s.amount}\n  {s.transfer_date}\n\n')
     
     
     response.writelines(lines)
