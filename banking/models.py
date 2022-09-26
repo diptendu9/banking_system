@@ -10,7 +10,7 @@ class Accholder(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     email=models.EmailField(unique=True)
-    account_number = models.IntegerField(default=random.randint(00000000,999999999),unique=True)
+    account_number = models.IntegerField(default=random.randint(10000000,999999999),unique=True)
     atypes = (
         ('S', 'Savings'),
         ('C', 'Current')

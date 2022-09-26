@@ -198,11 +198,11 @@ def statement(request):
     '''
 
     response = HttpResponse(content_type='text/plain')
-    response['content-Disposition']='attachment; filename=statement.csv'
+    response['content-Disposition']='attachment; filename=statement.txt'
     tran = Transactions.objects.all()
     lines=[]
     for t in tran:
-        lines.append(f'\n\n{t.t_type}\n {t.reciver}\n {t.amount}\n {t.transact_date}\n')
+        lines.append(f'\n\n{t.t_type}\n {t.reciver}\n {t.amount}\n {t.transact_date.__str__()}\n')
 
     # send = Transfers.objects.all()
 
