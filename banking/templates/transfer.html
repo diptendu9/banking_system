@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        
+        <form action="{% url 'transfer' %}" method="POST">
+          {% csrf_token %}
+          Account Balance : {{account.balance}}
+          <br>
+          Account Number : {{account.account_number}}
+          <br>
+          <br>
+          <div class="form-group">
+            <label >user:</label>
+            <input type="text" value={{user.get_username}} readonly>
+          </div>
+            <div class="form-group">
+                <label>Reciver Account Number:</label>
+                {{form.reciver}}
+              </div>
+              <div class="form-group">
+                <label>Amount:</label>
+                {{form.amount}}
+              </div>
+              <button type="submit" class="btn btn-primary" value="transfer">Send</button>
+        </form>
+    </div>
+{% endblock %}

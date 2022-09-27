@@ -6,9 +6,8 @@ from . import views
 urlpatterns = [
     path('', views.HomeView.as_view(),name="home"),
     # path('authorize', views.AuthorizedeView.as_view(), name="authorize"),
-    path('register/', views.CreateCustomUser.as_view(),name="register"),
-
-    path('login/', views.login_view, name='login'),
-    # path('logout/', views.LogoutView.as_view(), name='logout'),
-    # path('api/', Apiuse.as_view()),
+    # path('accounts/', include('django.contrib.auth.urls')),
+    path('login/', views.LoginInterfaceView.as_view(), name="login"),
+    path('logout/', views.LogoutInterfaceView.as_view(), name="logout"),
+    path('signup/', views.SignupView.as_view(), name="signup"),
 ]

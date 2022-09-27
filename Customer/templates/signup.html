@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" action="{% url 'signup' %}" style='text-align: left; margin: 1 auto; width: 500px; '> {% csrf_token %}
+    {{form.as_p}}
+    <!-- {{form.firstname}}
+    {{form.lasttname}}
+    {{form.email}} -->
+
+    <input class="btn btn-primary" type="submit" name="submit"/>
+
+
+</form>
+
+{% endblock %}

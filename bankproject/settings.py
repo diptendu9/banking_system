@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,7 +64,9 @@ ROOT_URLCONF = 'bankproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/ 'static/templates'],
+        'DIRS': [
+            BASE_DIR/ 'static/templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,6 +81,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bankproject.wsgi.application'
 
+
+REST_FRAMEWORK = {
+   
+   'DEFAULT_PERMISSION_CLASSES': ( 'rest_framework.permissions.IsAdminUser', ),
+   
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -126,7 +135,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR/'static',
+    BASE_DIR/'static/',
 ]
 
 # Default primary key field type
@@ -134,5 +143,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL= '/customer/accounts'
-AUTH_USER_MODEL = 'Customer.CustomUser'
+LOGIN_REDIRECT_URL = '/'
+# LOGIN_REDIRECT_URL= '/customer/home'
+# AUTH_USER_MODEL = 'Customer.CustomUser'

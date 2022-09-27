@@ -1,0 +1,13 @@
+.note-li {
+    justify-content: center;
+    color:darkmagenta;
+    text-decoration: none;
+    list-style: none;
+}
+
+.list{
+    list-style: none;
+}
+/* body{
+    justify-content: center;
+} */
